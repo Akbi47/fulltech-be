@@ -1,0 +1,1 @@
+export { ExpressRequest } from './express-request.interface'
