@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AppConfigService } from './configs/app.config.service';
+import { AppConfigService } from './config/app.config.service';
 import { Logger, VersioningType } from '@nestjs/common';
 import { GlobalValidationPipe, registerSwagger } from '@libs/infrastructure';
 
@@ -37,7 +37,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   await app.listen(port, host);
-
+  
   Logger.log(`Server started on http://${host}:${port}/api/v1`, 'Server');
   if (enableApiDoc) {
     Logger.log(

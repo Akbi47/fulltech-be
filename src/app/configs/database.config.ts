@@ -1,4 +1,4 @@
-import { User } from '../entities';
+import { User } from './../entities';
 import { ConfigService } from '@nestjs/config';
 
 export const MysqlInstanceConfig = (): any => {
@@ -17,5 +17,6 @@ export const MysqlInstanceConfig = (): any => {
     // auto synchronize
     // entities: [__dirname + '/dist/**/index.js'], // dev environment
     // synchronize: true, // dev environment
-  };
-};
+  }
+}
+

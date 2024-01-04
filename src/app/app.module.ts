@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TagModule } from './tag/tag.module';
-import { ConfigModule } from './configs/config.module';
+import { ConfigModule } from './config/config.module';
 import { UserModule } from './user/user.module';
 import { AuthMiddleware } from 'src/libs/infrastructure/auth/middlewares';
 
