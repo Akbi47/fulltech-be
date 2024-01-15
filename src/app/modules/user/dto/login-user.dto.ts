@@ -12,16 +12,16 @@ export class LoginUserDto {
   @IsNotEmpty()
   @IsEmail()
   @Expose({ name: 'email' })
-  public email: string;
+  email: string;
 
 
   @ApiProperty({
     description: 'password of user',
-    example: '472000',
+    example: 'aihsjru283!',
     name: 'password',
     required: true,
   })
   @IsNotEmpty()
   @Expose({ name: 'password' })
-  public password: string;
+  password: string;
 }

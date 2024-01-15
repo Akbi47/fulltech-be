@@ -1,9 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { LoginUserDto } from './login-user.dto';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateUserProvidersDto {
+  @ApiProperty({
+    example: '0717a285-582e-49e8-b876-22221a3c694d',
+    description: 'The custom id of the user',
+    name: 'cid',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Expose({ name: 'cid' })
+  cid: string;
 
   @ApiProperty({
     example: 'john.doe@example.com',
@@ -28,14 +36,4 @@ export class CreateUserDto {
   @Expose({ name: 'name' })
   name: string;
 
-  @ApiProperty({
-    description: 'The password of user',
-    example: 'cb4afaa0_fd5dk*49a9@b02085730da02094',
-    format: 'password',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
-  @Expose({ name: 'password' })
-  password: string;
 }

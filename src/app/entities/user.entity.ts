@@ -1,40 +1,58 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEmail, IsString, MinLength } from 'class-validator';
-import { hash } from 'bcrypt';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  AfterInsert,
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
+import { Account } from './account.entity';
+import { TwoFactorConfirmation } from './two-factor-confirmation.entity';
+import { generateHash } from '../utils/token';
+import { UserRole, UserStatus } from '../shares/enums/user.enum';
 
 @Entity({ name: 'user' })
+@Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     description: 'random id',
   })
-  id?: string;
+  @Expose({ name: 'id' })
+  id: string;
+
+  @Column({ name: 'cid', nullable: true })
+  @ApiProperty({
+    description: 'custom id',
+  })
+  @Expose({ name: 'cid' })
+  cid: string | null;
 
   @Column({ name: 'email' })
-  @IsEmail()
   @ApiProperty({
-    description: 'email of user',
-    example: 'user1@gmail.com',
+    example: 'john.doe@example.com',
+    description: 'The email address of the user',
+    format: 'email',
   })
   @Expose({ name: 'email' })
   email: string;
 
-  @Column({ name: 'username' })
-  @IsString()
+  @Column({ name: 'name' })
   @ApiProperty({
-    description: 'email of user',
-    example: 'user1@gmail.com',
+    description: 'name of user',
+    example: 'user',
   })
-  @Expose({ name: 'username' })
-  username: string;
+  @Expose({ name: 'name' })
+  name: string;
 
-  @Column({ name: 'password' })
-  @IsString()
-  @MinLength(8)
+  @Column({ name: 'password', nullable: true })
   @ApiProperty({
-    description: 'password of user',
+    description: 'The password of user',
     example: 'cb4afaa0_fd5dk*49a9@b02085730da02094',
   })
   @Expose({ name: 'password' })
@@ -47,25 +65,85 @@ export class User {
     default: '',
     nullable: true,
   })
-  @IsString()
   @ApiProperty({
-    description: 'describe or express something about user',
+    description: 'Describe or express something about user',
     example: 'i am graceful',
   })
   @Expose({ name: 'bio' })
-  bio: string;
+  bio: string | null;
 
-  @Column({ name: 'avatar_image', default: '', nullable: true })
-  @IsString()
+  @Column({ name: 'emailVerified', nullable: true })
   @ApiProperty({
-    description: 'avatar image of user',
+    description: 'The date and time when the email was verified',
+    type: Date,
   })
-  @Expose({ name: 'avatar_image' })
-  avatarImage: string;
+  @Expose({ name: 'emailVerified' })
+  emailVerified: Date | null;
+
+  @Column({
+    name: 'role',
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  @ApiProperty({
+    description: 'The role of the user',
+    enum: UserRole,
+  })
+  @Expose({ name: 'role' })
+  role: UserRole;
+
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.INACTIVE,
+  })
+  @ApiProperty({
+    description: 'The status of the user',
+    enum: UserStatus,
+  })
+  @Expose({ name: 'status' })
+  status: UserStatus;
+
+  @ApiProperty({
+    description: 'The accounts associated with the user',
+    type: [Account],
+  })
+  @Expose({ name: 'account' })
+  @OneToMany(() => Account, (account) => account.user)
+  accounts: Account[];
+
+  @Column({ name: 'isTwoFactorEnabled', default: false })
+  @ApiProperty({
+    description: 'The flag for two factor authentication',
+    type: Boolean,
+  })
+  @Expose({ name: 'isTwoFactorEnabled' })
+  isTwoFactorEnabled?: boolean;
+
+  @Column({ name: 'twoFactorConfirmation', type: 'jsonb', nullable: true })
+  @ApiProperty({
+    description: 'The two factor confirmation details',
+    type: TwoFactorConfirmation,
+  })
+  @Expose({ name: 'twoFactorConfirmation' })
+  @OneToOne(
+    () => TwoFactorConfirmation,
+    (twoFactorConfirmation) => twoFactorConfirmation.user,
+  )
+  twoFactorConfirmation: TwoFactorConfirmation | null;
 
   @BeforeInsert()
   async setPassword(): Promise<void> {
-    const saltRounds = 10;
-    this.password = await hash(this.password, saltRounds);
+    if (this.password) {
+      const { hashPassword } = await generateHash(this.password);
+      this.password = hashPassword;
+    }
+    if (this.cid) {
+      console.log(this.cid);
+
+      this.id = this.cid;
+    }
   }
 }

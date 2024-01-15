@@ -10,7 +10,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
+    // "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
@@ -20,7 +20,7 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "paths": {
-      "@app/*": ["src/*"],
+      "@app/*": ["src/app/*"],
       "@libs/common": ["src/libs/common"],
       "@libs/infrastructure": ["src/libs/infrastructure"]
     }

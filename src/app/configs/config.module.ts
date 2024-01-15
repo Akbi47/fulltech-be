@@ -4,10 +4,8 @@ import {
   ConfigService as NestConfigService,
 } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmConfigServiceForMysql } from './config.service';
+import { TypeOrmConfigServiceForPostgres } from './config.service';
 import { AppConfigService } from './app.config.service';
-import { AppDataSource } from './typeorm.config';
-import { MysqlInstanceConfig } from './database.config';
 
 @Global()
 @Module({
@@ -17,7 +15,7 @@ import { MysqlInstanceConfig } from './database.config';
     }),
     TypeOrmModule.forRootAsync({
       imports: [NestConfigModule],
-      useClass: TypeOrmConfigServiceForMysql,
+      useClass: TypeOrmConfigServiceForPostgres,
       inject: [NestConfigService],
     })
   ],

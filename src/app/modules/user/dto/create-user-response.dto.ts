@@ -13,7 +13,6 @@ export class CreateUserResponseDto {
     type: Array,
   })
   @IsArray()
-  @ValidateNested()
   public user?: CreateUserDto;
 
   @ApiProperty({
