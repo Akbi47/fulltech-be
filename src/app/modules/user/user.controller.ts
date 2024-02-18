@@ -80,13 +80,13 @@ export class UserController {
     return result;
   }
 
-  @Get('email/search/:email')
+  @Get('email/search')
   @Version('1')
   @ApiOperation({
     summary: 'Get account informations by email',
     description: 'Get account informations by email',
   })
-  async getAccountByEmail(@Param() emailDto: EmailDto) {
+  async getAccountByEmail(@Query() emailDto: EmailDto) {
     const result = await this.userService.getUserByEmail(emailDto);
     return result;
   }

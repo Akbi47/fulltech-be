@@ -1,6 +1,13 @@
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-import { Account, PasswordResetToken, TwoFactorConfirmation, TwoFactorToken, User, VerificationToken } from './../entities';
+import {
+  Account,
+  PasswordResetToken,
+  TwoFactorConfirmation,
+  TwoFactorToken,
+  User,
+  VerificationToken,
+} from './../entities';
 
 config();
 
@@ -17,7 +24,8 @@ export const AppDataSource = new DataSource({
     PasswordResetToken,
     TwoFactorConfirmation,
     TwoFactorToken,
-    VerificationToken,],
+    VerificationToken,
+  ],
   migrations: ['dist/migrations/*.js'],
   migrationsRun: true,
 });
